@@ -9,13 +9,17 @@ import { Login } from './pages/Login/Login'
 import { Register } from './pages/Register/Register'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ListaDeDeseados } from './pages/ListaDeDeseados/ListaDeDeseados'
+import { AgregarLibro } from './pages/AgregarLibro/AgregarLibro';
 
 const routes = [
   { path: "/", name: "Home", component: <Home /> },
   { path: "/libros", name: "Libros", component: <Libros /> },
   { path: "/misLibros", name: "Mis Libros", component: <MisLibros /> },
+  { path: "/listadedeseados", name: "Lista De Deseados", component: <ListaDeDeseados /> },
   { path: "/login", name: "Login", component: <Login /> },
   { path: "/register", name: "Register", component: <Register /> },
+  { path: "/agregarlibro", name: "Agregar Libro", component: <AgregarLibro /> },
 ];
 
 function App() {

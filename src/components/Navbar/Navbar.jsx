@@ -16,6 +16,8 @@ export function Navbar() {
                   <Link to="/" className="hover:text-white transition-colors">Home</Link>
                   <Link to="/libros" className="hover:text-white transition-colors">Libros</Link>
                   <Link to="/misLibros" className="hover:text-white transition-colors">Mis Libros</Link>
+                  <Link to="/listadedeseados" className="hover:text-white transition-colors">Lista de deseados</Link>
+                  <Link to="/agregarlibro" className="hover:text-white transition-colors">Agregar libro</Link>
               </div>
               <div className="flex space-x-4">
                   <Link to="/login" className="hover:text-white transition-colors">Iniciar Sesión</Link>
