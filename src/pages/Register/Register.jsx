@@ -33,6 +33,7 @@ export function Register() {
         email: formData.email,
         password: formData.password,
         rol: formData.rol,
+        listaDeseados: [],
       };
 
       const response = await fetch(usuariosAPI, {
