@@ -1,14 +1,14 @@
-import { environment } from "../utils/environment";
+import { librosAPI, API_KEY } from "../utils/environment";
 
 const headers = {
     "Content-Type": "application/json",
-    "X-Master-Key": environment.apiKey,
+    "X-Master-Key": API_KEY,
 };
 
 
 export async function getLibros() {
 
-    const response = await fetch(environment.apiUrl, { headers });
+    const response = await fetch(librosAPI, { headers });
     const data = await response.json(); 
     return data.record.libros; 
     

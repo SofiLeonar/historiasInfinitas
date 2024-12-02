@@ -7,6 +7,8 @@ import { Libros } from './pages/Libros/Libros'
 import { MisLibros } from './pages/MisLibros/MisLibros'
 import { Login } from './pages/Login/Login'
 import { Register } from './pages/Register/Register'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const routes = [
   { path: "/", name: "Home", component: <Home /> },
@@ -21,6 +23,16 @@ function App() {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        closeButton={false}
+        theme="dark"
+      />
+
       <BrowserRouter>
           <Navbar />
           <Routes>

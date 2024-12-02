@@ -1,20 +1,67 @@
 import React, { useState } from "react";
+import { getUsuarios } from "../../services/usuarios";
+import { usuariosAPI, API_KEY } from "../../utils/environment";
+import { toast } from "react-toastify";
 
 export function Register() {
   const [formData, setFormData] = useState({
     nombre: "",
     usuario: "",
     email: "",
-    contraseña: "",
+    password: "",
     rol: "usuario",
   });
 
-  const handleChange = (e) => {
+  const updateFormData = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const usuarios = await getUsuarios();
+
+      const nuevoUsuario = {
+        id: usuarios.length ? usuarios[usuarios.length - 1].id + 1 : 1, 
+        nombre: formData.nombre,
+        usuario: formData.usuario,
+        email: formData.email,
+        password: formData.password,
+        rol: formData.rol,
+      };
+
+      const response = await fetch(usuariosAPI, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": API_KEY, 
+        },
+        body: JSON.stringify({ usuarios: [...usuarios, nuevoUsuario] }),
+      });
+
+      if (!response.ok) {
+        toast.error("Error al registrar el usuario.");
+        return;
+      }
+
+      toast.success("Usuario registrado exitosamente.");
+
+      setFormData({
+        nombre: "",
+        usuario: "",
+        email: "",
+        password: "",
+        rol: "usuario",
+      });
+    } catch (error) {
+      console.error("Error al registrar usuario:", error);
+      toast.error("Hubo un problema al registrar el usuario.");
+    }
   };
 
   return (
@@ -28,8 +75,8 @@ export function Register() {
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
           Regístrate
         </h2>
-        
-        <form className="space-y-4">
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="nombre">
               Nombre completo
@@ -40,7 +87,7 @@ export function Register() {
               name="nombre"
               placeholder="Ingresa tu nombre completo"
               value={formData.nombre}
-              onChange={handleChange}
+              onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
             />
           </div>
@@ -55,7 +102,7 @@ export function Register() {
               name="usuario"
               placeholder="Elige un nombre de usuario"
               value={formData.usuario}
-              onChange={handleChange}
+              onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
             />
           </div>
@@ -70,22 +117,22 @@ export function Register() {
               name="email"
               placeholder="Ingresa tu correo electrónico"
               value={formData.email}
-              onChange={handleChange}
+              onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="contraseña">
+            <label className="block text-gray-700 mb-2" htmlFor="password">
               Contraseña
             </label>
             <input
               type="password"
-              id="contraseña"
-              name="contraseña"
+              id="password"
+              name="password"
               placeholder="Crea una contraseña"
-              value={formData.contraseña}
-              onChange={handleChange}
+              value={formData.password}
+              onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
             />
           </div>
@@ -98,7 +145,7 @@ export function Register() {
               id="rol"
               name="rol"
               value={formData.rol}
-              onChange={handleChange}
+              onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
             >
               <option value="usuario">Usuario</option>
@@ -113,7 +160,7 @@ export function Register() {
             Registrar
           </button>
         </form>
-        
+
         <p className="text-center text-gray-600 mt-4">
           ¿Ya tienes cuenta?{" "}
           <a href="/login" className="text-blue-600 hover:underline">
