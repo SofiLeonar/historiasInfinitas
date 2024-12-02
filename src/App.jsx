@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar/Navbar'
 import {Footer} from "./components/Footer/Footer"
 import { Home } from './pages/Home/Home'
@@ -26,13 +28,14 @@ const routes = [
 ];
 
 function App() {
-
+  
 
   return (
-    <>
+    
+    <AuthProvider >
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -41,7 +44,7 @@ function App() {
       />
 
       <BrowserRouter>
-          <Navbar />
+      <Navbar />
           <Routes>
             {routes.map((route) => (
               <Route
@@ -53,7 +56,8 @@ function App() {
           </Routes>
           <Footer />
         </BrowserRouter>
-    </>
-  )
+        </AuthProvider>
+    
+  );
 }
 export default App;
