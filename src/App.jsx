@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ListaDeDeseados } from './pages/ListaDeDeseados/ListaDeDeseados'
 import { AgregarLibro } from './pages/AgregarLibro/AgregarLibro';
 import { VerLibro } from './pages/VerLibro/VerLibro';
+import { EditarLibro} from './pages/EditarLibro/EditarLibro';
 
 
 const routes = [
@@ -25,6 +26,7 @@ const routes = [
   { path: "/register", name: "Register", component: <Register /> },
   { path: "/agregarlibro", name: "Agregar Libro", component: <AgregarLibro /> },
   { path: "/verlibro/:id", name: "Ver Libro", component: <VerLibro /> },
+  { path: "/editarlibro/:id", name: "Editar Libro", component: <EditarLibro /> },
 ];
 
 function App() {

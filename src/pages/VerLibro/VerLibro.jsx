@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; 
 import { useLibros } from "../../hooks/useLibros";
 
 export function VerLibro() {
   const { id } = useParams();
+  const navigate = useNavigate(); 
   const [libro, setLibro] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const handleEdit = () => {
+    navigate(`/editarlibro/${id}`);
+  };
 
   useEffect(() => {
     const fetchLibro = async () => {
@@ -26,7 +31,7 @@ export function VerLibro() {
         setLoading(false);
       }
     };
-
+    
     fetchLibro();
   }, [id]);
 
@@ -68,7 +73,7 @@ export function VerLibro() {
             <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
               Agregar a Leídos
             </button>
-            <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
+            <button onClick={handleEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
               Editar
             </button>
             <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-500 transition">
