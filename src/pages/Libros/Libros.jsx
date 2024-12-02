@@ -24,9 +24,11 @@ export function Libros() {
       </h1>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-8 pb-12">
-        {libros.map((libro) => (
-          <CardBook libro={libro} key={libro.id} />
-        ))}
+        {libros.length === 0 ? (
+          <p>No se encontraron libros</p>
+        ) : (
+          libros.map((libro) => <CardBook key={libro.id} libro={libro} />)
+        )}
       </section>
     </div>
   );
