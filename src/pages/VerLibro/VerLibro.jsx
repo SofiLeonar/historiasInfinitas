@@ -15,6 +15,7 @@ export function VerLibro() {
   const [error, setError] = useState(null);
   const { isLoggedIn, user, logout } = useAuth();
   const isAdmin = user?.role === "admin";
+  const [isInDeseados, setIsInDeseados] = useState(false);
 
   useEffect(() => {
     const fetchLibro = async () => {
@@ -22,49 +23,65 @@ export function VerLibro() {
         setLoading(true);
         const libros = await getLibros();
         const libroEncontrado = libros.find((libro) => libro.id === parseInt(id, 10));
-
-        if (!libroEncontrado) {
-          throw new Error("Libro no encontrado");
-        }
-
+  
+        if (!libroEncontrado) throw new Error("Libro no encontrado");
+  
         setLibro(libroEncontrado);
+  
+        // Limpiar lista deseados del usuario
+        const listaLimpia = user?.listaDeseados
+          ? [...new Set(user.listaDeseados.flat())]
+          : [];
+        user.listaDeseados = listaLimpia;
+  
+        // Verificar si el libro está en la lista limpia
+        setIsInDeseados(listaLimpia.includes(libroEncontrado.id));
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchLibro();
-  }, [id]);
-
-
-  const handleAgregarDeseados = async (libroId) => {
+  }, [id, user]);
+  
+  const handleAgregarQuitarDeseados = async (libroId) => {
     try {
-      if (!user) {
-        throw new Error("Usuario no encontrado");
-      }
-  
+      if (!user) throw new Error("Usuario no encontrado.");
+      let nuevaListaDeseados;
+      let nuevoEstadoIsInDeseados;
+
       if (user.listaDeseados.includes(libroId)) {
-        toast.info("Este libro ya está en tu lista de deseados.");
-        return;
-      }
-  
-      user.listaDeseados.push(libroId);
-  
-      localStorage.setItem("user", JSON.stringify(user));
-  
-      const response = await updateUser(user.id, libroId);
-      if (response) {
-        toast.success("Libro agregado a tu lista de deseados.");
+        nuevaListaDeseados = user.listaDeseados.filter((id) => id !== libroId);
+        nuevoEstadoIsInDeseados = false;
+        toast.info("Libro eliminado de tu lista de deseados.");
       } else {
-        toast.error("Hubo un error al agregar el libro.");
+        nuevaListaDeseados = [...user.listaDeseados, libroId];
+        nuevoEstadoIsInDeseados = true;
+        toast.success("Libro agregado a tu lista de deseados.");
       }
+  
+      nuevaListaDeseados = [...new Set(nuevaListaDeseados.flat())];
+  
+      user.listaDeseados = nuevaListaDeseados;
+      localStorage.setItem("user", JSON.stringify(user));
+      setIsInDeseados(nuevoEstadoIsInDeseados);
+
+  
+      const response = await updateUser(user.id, nuevaListaDeseados);
+      if (!response) {
+        toast.error("Hubo un error al actualizar la lista de deseados.");
+        setIsInDeseados(!nuevoEstadoIsInDeseados);  
+    }
     } catch (error) {
-      console.error("Error al agregar a la lista de deseados:", error);
-      toast.error("Hubo un problema al agregar el libro a la lista de deseados.");
+      console.error("Error al manejar lista de deseados:", error);
+      toast.error("Hubo un problema al actualizar la lista de deseados.");
     }
   };
+  
+  
+  
 
   if (loading) {
     return (
@@ -104,15 +121,11 @@ export function VerLibro() {
           <p className="text-gray-700 mb-4">{libro.resumen}</p>
 
           <div className="flex space-x-4">
-            <button
-              onClick={() => handleAgregarDeseados(libro.id)}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+          <button
+              onClick={() => handleAgregarQuitarDeseados(libro.id)}
+              className={`px-4 py-2 rounded transition ${isInDeseados ? 'bg-green-500 hover:bg-green-700' : 'bg-gray-500 hover:bg-gray-800'}`}
             >
-              Agregar a Deseados
-            </button>
-
-            <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
-              Agregar a Leídos
+              {isInDeseados ? 'Eliminar de Deseados' : 'Agregar a Deseados'}
             </button>
 
             {isAdmin && (
