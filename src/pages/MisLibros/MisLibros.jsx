@@ -1,7 +1,7 @@
-export function Home() {
+export function MisLibros() {
     return (
         <div>
-            <h2>Home</h2>
+            <h2>Mis libros</h2>
     
             <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate id

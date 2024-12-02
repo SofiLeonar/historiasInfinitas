@@ -1,19 +1,34 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Home from './pages/home/Home';
-import Productos from './pages/productos.jsx/Productos';
+import { Navbar } from './components/Navbar/Navbar'
+import { Home } from './pages/Home/Home'
+import { Libros } from './pages/Libros/Libros'
+import { MisLibros } from './pages/MisLibros/MisLibros'
+
+const routes = [
+  { path: "/", name: "Home", component: <Home /> },
+  { path: "/libros", name: "Libros", component: <Libros /> },
+  { path: "/misLibros", name: "Mis Libros", component: <MisLibros /> },
+];
 
 function App() {
+
+
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/productos" element={<Productos />} />
-        </Routes>
-      </BrowserRouter>
+          <Navbar />
+          <Routes>
+            {routes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.component}
+              />
+            ))}
+          </Routes>
+        </BrowserRouter>
     </>
-  );
+  )
 }
-
 export default App;
