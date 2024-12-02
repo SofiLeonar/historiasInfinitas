@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; 
 import { useLibros } from "../../hooks/useLibros";
+import { FallingLines } from "react-loader-spinner";
 
 export function VerLibro() {
   const { id } = useParams();
@@ -36,7 +37,16 @@ export function VerLibro() {
   }, [id]);
 
   if (loading) {
-    return <p>Cosito de carga aca!</p>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-cover bg-center">
+        <FallingLines
+        color="#4fa94d"
+        width="100"
+        visible={true}
+        ariaLabel="falling-circles-loading"
+        />
+      </div>
+      );
   }
 
   if (error) {
