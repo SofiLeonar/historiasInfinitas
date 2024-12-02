@@ -29,7 +29,7 @@ export function Home() {
                             Tu colección personal de libros, siempre contigo.
                         </p>
                         <div className="mt-8 flex space-x-4">
-                            <Link to="/libros">
+                            <Link to="/mislibros">
                                 <button className="px-6 py-3 bg-white text-black font-semibold rounded shadow-md hover:bg-gray-900 hover:text-white">
                                     Empieza ahora
                                 </button>
@@ -108,7 +108,7 @@ export function Home() {
                         <p className="text-gray-600 mb-6">
                             Una biblioteca digital que te entiende:<br />tus lecturas pasadas, presentes y futuras en un solo lugar.
                         </p>
-                        <Link to="/libros">
+                        <Link to="/mislibros">
                                 <button className="px-6 py-3 bg-gray-900 text-white font-semibold rounded shadow-md hover:bg-white hover:text-black">
                                     Crea tu colección
                                 </button>
