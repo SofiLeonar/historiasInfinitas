@@ -2,23 +2,25 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; 
 import { useLibros } from "../../hooks/useLibros";
 import { FallingLines } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import { getLibros } from "../../services/libros";
+import { updateUser } from "../../services/usuarios";
+import { useAuth } from "../../context/AuthContext"; 
 
 export function VerLibro() {
   const { id } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [libro, setLibro] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const handleEdit = () => {
-    navigate(`/editarlibro/${id}`);
-  };
+  
+  const { user, isLoggedIn } = useAuth();
 
   useEffect(() => {
     const fetchLibro = async () => {
       try {
         setLoading(true);
-        const [libros] = await useLibros();
+        const libros = await getLibros();
         const libroEncontrado = libros.find((libro) => libro.id === parseInt(id, 10));
 
         if (!libroEncontrado) {
@@ -32,9 +34,37 @@ export function VerLibro() {
         setLoading(false);
       }
     };
-    
+
     fetchLibro();
   }, [id]);
+
+
+  const handleAgregarDeseados = async (libroId) => {
+    try {
+      if (!user) {
+        throw new Error("Usuario no encontrado");
+      }
+  
+      if (user.listaDeseados.includes(libroId)) {
+        toast.info("Este libro ya está en tu lista de deseados.");
+        return;
+      }
+  
+      user.listaDeseados.push(libroId);
+  
+      localStorage.setItem("user", JSON.stringify(user));
+  
+      const response = await updateUser(user.id, libroId);
+      if (response) {
+        toast.success("Libro agregado a tu lista de deseados.");
+      } else {
+        toast.error("Hubo un error al agregar el libro.");
+      }
+    } catch (error) {
+      console.error("Error al agregar a la lista de deseados:", error);
+      toast.error("Hubo un problema al agregar el libro a la lista de deseados.");
+    }
+  };
 
   if (loading) {
     return (
@@ -48,10 +78,7 @@ export function VerLibro() {
       </div>
       );
   }
-
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div
@@ -77,15 +104,24 @@ export function VerLibro() {
           <p className="text-gray-700 mb-4">{libro.resumen}</p>
 
           <div className="flex space-x-4">
-            <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
-              Agregar a Favoritos
+            <button
+              onClick={() => handleAgregarDeseados(libro.id)}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+            >
+              Agregar a Deseados
             </button>
+
             <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
               Agregar a Leídos
             </button>
-            <button onClick={handleEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
+
+            <button
+              onClick={() => navigate(`/editarlibro/${id}`)}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
+            >
               Editar
             </button>
+
             <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-500 transition">
               Eliminar
             </button>

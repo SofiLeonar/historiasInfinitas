@@ -55,7 +55,9 @@ export function AuthProvider({ children }) {
         username: user.usuario, 
         email: user.email,
         role: user.rol, 
+        listaDeseados: user.listaDeseados || []
         });
+        
 
     localStorage.setItem("isLoggedIn", true);
     localStorage.setItem("user", JSON.stringify(user));
