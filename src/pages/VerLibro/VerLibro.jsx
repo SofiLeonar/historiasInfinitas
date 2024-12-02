@@ -13,8 +13,8 @@ export function VerLibro() {
   const [libro, setLibro] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const { user, isLoggedIn } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     const fetchLibro = async () => {
@@ -115,16 +115,16 @@ export function VerLibro() {
               Agregar a Leídos
             </button>
 
-            <button
-              onClick={() => navigate(`/editarlibro/${id}`)}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition"
-            >
-              Editar
-            </button>
-
-            <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-500 transition">
-              Eliminar
-            </button>
+            {isAdmin && (
+            <div>
+                <button onClick={handleEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
+                Editar
+              </button>
+              <button className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-red-500 transition">
+                Eliminar
+              </button>  
+            </div>
+            )}
           </div>
         </div>
       </div>

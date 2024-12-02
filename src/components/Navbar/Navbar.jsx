@@ -1,10 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export function Navbar() {
     const { isLoggedIn, user, logout } = useAuth();
-
+    const navigate = useNavigate();
     const isAdmin = user?.role === "admin";
+
+    const handleLogout = () => {
+        logout(); 
+        navigate("/login");  
+    };
 
     return (
         <nav className="bg-gray-900 text-gray-400 sticky top-0 z-50">
@@ -37,7 +42,7 @@ export function Navbar() {
                     ) : (
                         <>
                             <span className="text-white">{user.nombre}</span>
-                            <button onClick={logout} className="hover:text-white transition-colors">
+                            <button onClick={handleLogout} className="hover:text-white transition-colors">
                                 Cerrar Sesión
                             </button>
                         </>

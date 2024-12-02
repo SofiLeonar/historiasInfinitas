@@ -15,18 +15,19 @@ import { ListaDeDeseados } from './pages/ListaDeDeseados/ListaDeDeseados'
 import { AgregarLibro } from './pages/AgregarLibro/AgregarLibro';
 import { VerLibro } from './pages/VerLibro/VerLibro';
 import { EditarLibro} from './pages/EditarLibro/EditarLibro';
+import RutaProtegida from "./components/RutaProtegida/RutaProtegida";
 
 
 const routes = [
   { path: "/", name: "Home", component: <Home /> },
   { path: "/libros", name: "Libros", component: <Libros /> },
-  { path: "/misLibros", name: "Mis Libros", component: <MisLibros /> },
-  { path: "/listadedeseados", name: "Lista De Deseados", component: <ListaDeDeseados /> },
+  { path: "/misLibros", name: "Mis Libros", component: <RutaProtegida><MisLibros /></RutaProtegida> },
+  { path: "/listadedeseados", name: "Lista De Deseados", component: <RutaProtegida><ListaDeDeseados /></RutaProtegida> },
   { path: "/login", name: "Login", component: <Login /> },
   { path: "/register", name: "Register", component: <Register /> },
-  { path: "/agregarlibro", name: "Agregar Libro", component: <AgregarLibro /> },
-  { path: "/verlibro/:id", name: "Ver Libro", component: <VerLibro /> },
-  { path: "/editarlibro/:id", name: "Editar Libro", component: <EditarLibro /> },
+  { path: "/agregarlibro", name: "Agregar Libro", component: <RutaProtegida><AgregarLibro /></RutaProtegida> },
+  { path: "/verlibro/:id", name: "Ver Libro", component: <RutaProtegida><VerLibro /></RutaProtegida> },
+  { path: "/editarlibro/:id", name: "Editar Libro", component: <RutaProtegida><EditarLibro /></RutaProtegida> },
 ];
 
 function App() {

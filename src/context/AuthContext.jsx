@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { getUsuarios } from "../services/usuarios"; 
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -67,9 +68,10 @@ export function AuthProvider({ children }) {
     };
 
     const logout = () => {
+        
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("user");
-
+        
         setIsLoggedIn(false);
         setUser(null);
 
