@@ -28,13 +28,11 @@ export function VerLibro() {
   
         setLibro(libroEncontrado);
   
-        // Limpiar lista deseados del usuario
         const listaLimpia = user?.listaDeseados
           ? [...new Set(user.listaDeseados.flat())]
           : [];
         user.listaDeseados = listaLimpia;
   
-        // Verificar si el libro está en la lista limpia
         setIsInDeseados(listaLimpia.includes(libroEncontrado.id));
       } catch (err) {
         setError(err.message);
@@ -81,6 +79,9 @@ export function VerLibro() {
   };
   
   
+  const handleEdit = () => {
+    navigate(`/editarlibro/${libro.id}`);
+  };
   
 
   if (loading) {

@@ -20,6 +20,8 @@ export function Login() {
     e.preventDefault();
 
     const success = login(credentials.email, credentials.password);
+    console.log("Intentando iniciar sesión con:", credentials.email, credentials.password);
+
 
     if (success) {
       navigate("/"); 
