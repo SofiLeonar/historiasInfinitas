@@ -1,32 +1,33 @@
 import { useEffect, useState } from "react";
 import { useLibros } from "../../hooks/useLibros";
-
+import { CardBook } from "../../components/CardBook/CardBook";
 
 export function Libros() {
-    const [libros, setLibros] = useState([]);
+  const [libros, setLibros] = useState([]);
 
-    useEffect(() => {
-        useLibros().then(([libros]) => {
-            console.log(libros);
-            setLibros(libros);
-        });
-    }, []);
+  useEffect(() => {
+    useLibros().then(([libros]) => {
+      console.log(libros);
+      setLibros(libros);
+    });
+  }, []);
 
-    return (
-        <div>
-            <h1>Libros</h1>
-            <section className="flex flex-wrap gap-5">
-                {libros.map((libro)=>(
-                    <div className="border border-slate-500 rounded-lg p-5 w-80 m-5" key={libro.id}>
-                        <h2 className="text-xl">{libro.titulo}</h2>
-                        <p className="text-sm">{libro.autor}</p>
-                        <p className="text-sm">{libro.resumen}</p>
-                        <p className="text-sm">{libro.anio_publicacion}</p>
-                        <p className="text-sm">{libro.editorial}</p>
-                    </div>
-                ))}
-            </section>
-        </div>
-    );
+  return (
+    <div
+      className="flex flex-col items-center min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: `url('https://img.freepik.com/fotos-premium/estanteria-libros-biblioteca_883148-1060.jpg?w=1060')`,
+      }}
+    >
+      <h1 className="text-5xl md:text-6xl text-white mb-8 mt-12 font-[Arizonia]" style={{ textShadow: "2px 2px 4px black" }}>
+        Libros
+      </h1>
 
+      <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-8 pb-12">
+        {libros.map((libro) => (
+          <CardBook libro={libro} key={libro.id} />
+        ))}
+      </section>
+    </div>
+  );
 }
