@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { getLibros } from "../../services/libros";
+import { librosAPI, API_KEY } from "../../utils/environment";
 
 export function AgregarLibro() {
   const [formData, setFormData] = useState({
@@ -18,6 +21,57 @@ export function AgregarLibro() {
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const libros = await getLibros();
+  
+      if (!formData.titulo || !formData.autor || !formData.anio_publicacion) {
+        toast.error("Por favor, completa todos los campos requeridos.");
+        return;
+      }
+  
+      const nuevoLibro = {
+        id: libros.length ? libros[libros.length - 1].id + 1 : 1,
+        titulo: formData.titulo,
+        autor: formData.autor,
+        resumen: formData.resumen,
+        anio_publicacion: formData.anio_publicacion,
+        editorial: formData.editorial,
+        imagen: formData.imagen,
+      };
+  
+      const response = await fetch(librosAPI, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": API_KEY, 
+        },
+        body: JSON.stringify({ libros: [...libros, nuevoLibro] }),
+      });
+  
+      if (!response.ok) {
+        toast.error("Hubo un problema al agregar el libro.");
+        return;
+      }
+  
+      toast.success("Libro agregado exitosamente.");
+  
+      setFormData({
+        titulo: "",
+        autor: "",
+        resumen: "",
+        anio_publicacion: "",
+        editorial: "",
+        imagen: "",
+      });
+    } catch (error) {
+      console.error("Error al agregar libro:", error);
+      toast.error("Hubo un problema al registrar el libro.");
+    }
+  };
+
   return (
     <div
       className="flex items-center justify-center min-h-screen bg-cover bg-center"
@@ -29,8 +83,8 @@ export function AgregarLibro() {
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
           Agregar Nuevo Libro
         </h2>
-        
-        <form className="space-y-3">
+
+        <form className="space-y-3" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="titulo">
               Título
