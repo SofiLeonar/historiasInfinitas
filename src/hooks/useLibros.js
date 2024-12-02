@@ -4,7 +4,7 @@ export async function useLibros() {
     const libros = await getLibros();
 
     if (Array.isArray(libros)) {
-        libros.sort((a, b) => a.titulo.localeCompare(b.titulo)); // Ordena alfabéticamente por título
+        libros.sort((a, b) => a.titulo.localeCompare(b.titulo)); 
     }
 
     return [libros];

@@ -16,6 +16,7 @@ import { AgregarLibro } from './pages/AgregarLibro/AgregarLibro';
 import { VerLibro } from './pages/VerLibro/VerLibro';
 import { EditarLibro} from './pages/EditarLibro/EditarLibro';
 import RutaProtegida from "./components/RutaProtegida/RutaProtegida";
+import { ModalProvider } from "./context/ModalContext";
 
 
 const routes = [
@@ -36,6 +37,7 @@ function App() {
   return (
     
     <AuthProvider >
+      <ModalProvider>
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -59,7 +61,8 @@ function App() {
           </Routes>
           <Footer />
         </BrowserRouter>
-        </AuthProvider>
+        </ModalProvider>
+      </AuthProvider>
     
   );
 }
