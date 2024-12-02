@@ -1,17 +1,35 @@
 import { useEffect, useState } from "react";
 import { useLibros } from "../../hooks/useLibros";
 import { CardBook } from "../../components/CardBook/CardBook";
+import { FallingLines } from "react-loader-spinner";
 
 export function Libros() {
   const [libros, setLibros] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     useLibros().then(([libros]) => {
       console.log(libros);
       setLibros(libros);
-    });
+    })
+    .catch((error)=>console.log(error))
+    .finally(() => setLoading(false));
   }, []);
 
+      if (loading) {
+        return (
+        <div className="flex items-center justify-center min-h-screen bg-cover bg-center">
+          <FallingLines
+          color="#4fa94d"
+          width="100"
+          visible={true}
+          ariaLabel="falling-circles-loading"
+          />
+        </div>
+        );
+    }
+      
   return (
     <div
       className="flex flex-col items-center min-h-screen bg-cover bg-center"
