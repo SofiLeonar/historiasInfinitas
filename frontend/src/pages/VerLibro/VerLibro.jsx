@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; 
-import { useLibros } from "../../hooks/useLibros";
 import { FallingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import { getLibros } from "../../services/libros";
@@ -160,7 +159,6 @@ export function VerLibro() {
                 Eliminar
             </button>
             </div>
-            
             )}
           </div>
         </div>

@@ -12,9 +12,9 @@ POST http://localhost:5000/api/libros
 Content-Type: application/json
 
 {
-    "titulo": "HARRY POTTER Y LA PIEDRA FILOSOFAL",
-    "autor": "JK ROWLING",
-    "resumen": "Harry Potter se ha quedado huérfano y vive en casa de sus abominables tíos y del insoportable primo Dudley. Se siente muy triste y solo, hasta que un buen día recibe una carta que cambiará su vida para siempre.",
+    "titulo": "HasdasdAL",
+    "autor": "JasdasdG",
+    "resumen": "asdasdasdsad",
     "anio_publicacion": 1997,
     "imagen": "https://images.cdn3.buscalibre.com/fit-in/360x360/ce/e6/cee6ef96dad70d3f599b953f0e50afc7.jpg"
 }
@@ -33,4 +33,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:5000/api/libros/2   
+DELETE http://localhost:5000/api/libros/4   
