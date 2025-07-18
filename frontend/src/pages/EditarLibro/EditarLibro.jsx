@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useLibros } from "../../hooks/useLibros";
-import { librosAPI, API_KEY } from "../../utils/environment";
 
 export function EditarLibro() {
   const { id } = useParams();
@@ -12,7 +10,6 @@ export function EditarLibro() {
     autor: "",
     resumen: "",
     anio_publicacion: "",
-    editorial: "",
     imagen: "",
   });
   const [loading, setLoading] = useState(true);
@@ -22,14 +19,13 @@ export function EditarLibro() {
     const fetchLibro = async () => {
       try {
         setLoading(true);
-        const [libros] = await useLibros();
-        const libroEncontrado = libros.find((libro) => libro.id === parseInt(id, 10));
-
-        if (!libroEncontrado) {
+        const response = await fetch(`http://localhost:5000/api/libros/${id}`);
+        if (!response.ok) {
           throw new Error("Libro no encontrado");
         }
+        const data = await response.json();
 
-        setFormData(libroEncontrado);
+        setFormData(data.libro);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -42,29 +38,22 @@ export function EditarLibro() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const [libros] = await useLibros();
-
-      const updatedLibros = libros.map((libro) =>
-        libro.id === parseInt(id, 10) ? { ...formData } : libro
-      );
-
-      const response = await fetch(librosAPI, {
+       const response = await fetch(`http://localhost:5000/api/libros/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "X-Master-Key": API_KEY,
         },
-        body: JSON.stringify({ libros: updatedLibros }),
+        body: JSON.stringify({
+          ...formData,
+          anio_publicacion: Number(formData.anio_publicacion),
+        }),
       });
 
       if (!response.ok) {
@@ -146,19 +135,7 @@ export function EditarLibro() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
             />
           </div>
-          <div>
-            <label className="block text-gray-700 mb-2" htmlFor="editorial">
-              Editorial
-            </label>
-            <input
-              type="text"
-              id="editorial"
-              name="editorial"
-              value={formData.editorial}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-            />
-          </div>
+
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="imagen">
               URL de la Imagen

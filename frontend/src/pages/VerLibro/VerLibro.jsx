@@ -79,7 +79,27 @@ export function VerLibro() {
     }
   };
   
-  
+  const handleDelete = async () => {
+  if (!window.confirm("¿Estás seguro que querés eliminar este libro?")) return;
+
+  try {
+    const response = await fetch(`http://localhost:5000/api/libros/${libro.id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      toast.error(data.error || "Error al eliminar el libro.");
+      return;
+    }
+
+    toast.success("Libro eliminado correctamente.");
+    navigate("/libros");
+  } catch (error) {
+    console.error("Error al eliminar el libro:", error);
+    toast.error("Hubo un problema al eliminar el libro.");
+  }
+};
   const handleEdit = () => {
     navigate(`/editarlibro/${libro.id}`);
   };
@@ -134,7 +154,13 @@ export function VerLibro() {
                 <button onClick={handleEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-800 transition">
                 Editar
               </button>
+                <button 
+                onClick={handleDelete} 
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800 transition ml-4">
+                Eliminar
+            </button>
             </div>
+            
             )}
           </div>
         </div>
