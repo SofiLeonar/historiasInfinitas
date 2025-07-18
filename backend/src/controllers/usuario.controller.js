@@ -17,11 +17,13 @@ export class UsuarioController {
         }
         res.status(200).json({ usuario });
     }
-
+    
     static async create(req, res) {
         try {
             const { nombre, usuario, email, password, rol } = req.body;
             const passwordHash = await hashPassword(password);
+            console.log("Recibido:", { nombre, usuario, email, passwordHash, rol }); //!sacar esto y lo que sigue después de probar
+            console.log("Creando usuario en DB...");
             const usuarioNuevo = await UsuarioService.create({
                 nombre, 
                 usuario, 
@@ -31,7 +33,8 @@ export class UsuarioController {
             });
             res.status(201).json({ usuarioNuevo });
         } catch (error) {
-            res.status(500).json({ error: "Error al crear el usuario" });
+            console.error(error);
+            res.status(500).json({ error: error.message || "Error al crear el usuario" }); //!cambiar después
             
         }
     }

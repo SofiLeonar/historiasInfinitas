@@ -25,13 +25,13 @@ export class UsuarioService {
         });
     }
 
-    static async create(nombre, usuario, email, password, rol) {
+    static async create({nombre, usuario, email, password, rol}) {
         return prisma.usuario.create({
             data: {
                 nombre,
                 usuario,
                 email,
-                password: hashPassword,
+                password,
                 rol,
             },
         });

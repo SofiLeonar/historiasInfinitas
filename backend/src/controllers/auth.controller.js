@@ -1,8 +1,16 @@
+import { UsuarioService } from "../services/usuario.service.js";
+import { hashPassword } from "../utils/hash.js";
+import { prisma } from "../providers/prisma.js";
+import { createToken } from "../utils/jwt.js";
+import { comparePassword } from "../utils/hash.js";
+
 export class AuthController {
     static async login(req, res) {
         const { email, password } = req.body;
 
-        const usuario = await UsuarioService.getByEmail({ email });
+        const usuario = await prisma.usuario.findUnique({
+            where: { email },
+        });
 
         if (!usuario) {
             res.status(401).json({ error: "Usuario no encontrado" });
@@ -25,11 +33,22 @@ export class AuthController {
 
         res.status(200).json({ 
             message: "Usuario autenticado correctamente", 
-            token});
+            usuario: {
+                id: usuario.id,
+                nombre: usuario.nombre,
+                email: usuario.email,
+                rol: usuario.rol,
+                token
+            }
+        });
     }
 
     static async register(req, res) {
         const { nombre, usuario, email, password, rol } = req.body;
+
+        if (!nombre || !usuario || !email || !password || !rol) {
+            return res.status(400).json({ message: "Todos los campos son obligatorios" });
+        }
 
         const usuarioExistente = await UsuarioService.getByEmail({ email });
 
@@ -40,13 +59,13 @@ export class AuthController {
 
         const passwordHash = await hashPassword(password);
 
-        const usuarioNuevo = await UsuarioService.create(
+        const usuarioNuevo = await UsuarioService.create({
             nombre, 
             usuario, 
             email, 
-            passwordHash,
+            password: passwordHash,
             rol,
-        );
+    });
 
         const { password: _, ...userWithoutPassword } = usuarioNuevo;
 
