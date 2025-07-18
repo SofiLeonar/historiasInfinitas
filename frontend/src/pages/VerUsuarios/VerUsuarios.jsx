@@ -11,12 +11,26 @@ export function VerUsuarios() {
     const fetchUsuarios = async () => {
       try {
         setLoading(true);
-        const usuariosSimulados = [
-          { id: "1", nombre: "Ana Pérez", usuario: "ana123", email: "ana@example.com", rol: "usuario" },
-          { id: "2", nombre: "Juan López", usuario: "juanl", email: "juan@example.com", rol: "admin" },
-        ];
-        setUsuarios(usuariosSimulados);
-      } catch {
+
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("http://localhost:5000/api/usuarios", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error("No se pudieron obtener los usuarios.");
+        }
+
+        const data = await res.json();
+
+        setUsuarios(data.usuarios);
+
+      } catch (err) {
+        console.error("Error cargando usuarios:", err);
         setError("Error cargando usuarios.");
       } finally {
         setLoading(false);
@@ -48,7 +62,9 @@ export function VerUsuarios() {
       }}
     >
       <h1
-        className="text-5xl md:text-6xl text-white mb-8 mt-12 font-[Arizonia] text-center" style={{ textShadow: "2px 2px 4px black" }}>
+        className="text-5xl md:text-6xl text-white mb-8 mt-12 font-[Arizonia] text-center"
+        style={{ textShadow: "2px 2px 4px black" }}
+      >
         Lista de Usuarios
       </h1>
 

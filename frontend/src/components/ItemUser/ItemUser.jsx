@@ -1,11 +1,35 @@
 import React from "react";
 
 export default function ItemUser({ usuario }) {
-  const handleEdit = () => alert(`Editar usuario: ${usuario.nombre}`);
-  const handleDelete = () => {
-    if (!window.confirm(`¿Seguro que querés eliminar al usuario ${usuario.nombre}?`)) return;
-    alert(`Usuario ${usuario.nombre} eliminado (simulado)`);
-  };
+ const handleDelete = async () => {
+  if (!window.confirm(`¿Seguro que querés eliminar al usuario ${usuario.nombre}?`)) return;
+
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/usuarios/${usuario.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Error al eliminar usuario.");
+      return;
+    }
+
+    alert("Usuario eliminado correctamente.");
+
+    window.location.reload();
+  } catch (error) {
+    console.error("Error eliminando usuario:", error);
+    alert("Ocurrió un error al intentar eliminar el usuario.");
+  }
+};
 
   return (
     <div className="bg-white bg-opacity-90 rounded-md p-4 flex justify-between items-center shadow-md">
@@ -17,12 +41,7 @@ export default function ItemUser({ usuario }) {
       </div>
 
       <div className="flex space-x-3">
-        <button
-          onClick={handleEdit}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 transition"
-        >
-          Editar
-        </button>
+        
         <button
           onClick={handleDelete}
           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800 transition"
