@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// ⚠️ Maqueta temporal, sin conexión real
 export function EditarUsuario() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -13,36 +12,81 @@ export function EditarUsuario() {
     password: "",
     rol: "usuario",
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulación de fetch (maqueta)
     const fetchUsuario = async () => {
-      // En un futuro esto va a traer el usuario real
-      const usuarioFalso = {
-        nombre: "Juan Pérez",
-        usuario: "juanp",
-        email: "juanp@example.com",
-        password: "123456",
-        rol: "usuario",
-      };
-      setFormData(usuarioFalso);
-    };
+      try {
+        const res = await fetch(`http://localhost:5000/api/usuarios/${id}`);
+        if (!res.ok) throw new Error("Error al obtener usuario");
+        const data = await res.json();
 
+        setFormData({
+          nombre: data.nombre || "",
+          usuario: data.usuario || "",
+          email: data.email || "",
+          password: "", // No mostrar contraseña actual, dejar vacía para cambio opcional
+          rol: data.rol || "usuario",
+        });
+        setLoading(false);
+      } catch (error) {
+        toast.error("No se pudo cargar el usuario");
+        setLoading(false);
+      }
+    };
     fetchUsuario();
   }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simulamos un PUT sin conexión real
-    toast.success("Usuario actualizado (maqueta).");
-    navigate("/verusuarios");
+    // Validaciones básicas
+    if (!formData.nombre || !formData.usuario || !formData.email) {
+      toast.error("Completa los campos obligatorios");
+      return;
+    }
+
+    try {
+      const bodyToSend = {
+        nombre: formData.nombre,
+        usuario: formData.usuario,
+        email: formData.email,
+        rol: formData.rol,
+      };
+
+      // Solo mandar password si cambió (no vacía)
+      if (formData.password) {
+        bodyToSend.password = formData.password;
+      }
+
+      const res = await fetch(`http://localhost:5000/api/usuarios/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          // Si usas token para autorización, ponelo aquí:
+          // Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyToSend),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Error al actualizar usuario");
+      }
+
+      toast.success("Usuario actualizado correctamente");
+      navigate("/verusuarios"); // O a donde quieras redirigir
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
+
+  if (loading) return <p>Cargando usuario...</p>;
 
   return (
     <div
@@ -57,6 +101,10 @@ export function EditarUsuario() {
         </h2>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Inputs igual que antes */}
+          {/* ... */}
+          {/* Repite los inputs con formData y handleChange */}
+
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="nombre">
               Nombre completo
@@ -68,6 +116,7 @@ export function EditarUsuario() {
               value={formData.nombre}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
             />
           </div>
 
@@ -82,6 +131,7 @@ export function EditarUsuario() {
               value={formData.usuario}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
             />
           </div>
 
@@ -96,12 +146,13 @@ export function EditarUsuario() {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              required
             />
           </div>
 
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="password">
-              Contraseña
+              Contraseña (dejar vacío para no cambiar)
             </label>
             <input
               type="password"
@@ -110,6 +161,7 @@ export function EditarUsuario() {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              placeholder="Nueva contraseña"
             />
           </div>
 

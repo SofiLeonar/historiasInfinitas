@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { getUsuarios } from "../../services/usuarios";
-import { usuariosAPI, API_KEY } from "../../utils/environment";
 import { toast } from "react-toastify";
 
 export function Register() {
@@ -23,7 +21,7 @@ export function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     try {
+    try {
       const response = await fetch("http://localhost:5000/api/auth/register", {
         method: "POST",
         headers: {
@@ -74,10 +72,10 @@ export function Register() {
               type="text"
               id="nombre"
               name="nombre"
-              placeholder="Ingresa tu nombre completo"
               value={formData.nombre}
               onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
+              placeholder="Ingresa tu nombre completo"
             />
           </div>
 
@@ -89,10 +87,10 @@ export function Register() {
               type="text"
               id="usuario"
               name="usuario"
-              placeholder="Elige un nombre de usuario"
               value={formData.usuario}
               onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
+              placeholder="Elige un nombre de usuario"
             />
           </div>
 
@@ -104,10 +102,10 @@ export function Register() {
               type="email"
               id="email"
               name="email"
-              placeholder="Ingresa tu correo electrónico"
               value={formData.email}
               onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
+              placeholder="Ingresa tu correo electrónico"
             />
           </div>
 
@@ -119,10 +117,10 @@ export function Register() {
               type="password"
               id="password"
               name="password"
-              placeholder="Crea una contraseña"
               value={formData.password}
               onChange={updateFormData}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
+              placeholder="Crea una contraseña"
             />
           </div>
 

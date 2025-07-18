@@ -21,9 +21,14 @@ export class AuthController {
             return;
         }
 
+        console.log("usuario:", usuario);
+
         const token = createToken({ 
-            id: usuario.id, 
+            id: usuario.id,
+            rol: usuario.rol,
+            nombre: usuario.nombre
         });
+        console.log("Token creado:", token);
 
         res.status(200).json({ 
             message: "Usuario autenticado correctamente", 
@@ -65,11 +70,19 @@ export class AuthController {
 
         const token = createToken({
             id: usuarioNuevo.id,
+            rol: usuarioNuevo.rol,
+            nombre: usuarioNuevo.nombre,
         });
 
         res.status(201).json({ 
-            user: userWithoutPassword,
-            token
+            message: "Usuario registrado correctamente", 
+            usuario: {
+                id: usuarioNuevo.id,
+                nombre: usuarioNuevo.nombre,
+                email: usuarioNuevo.email,
+                rol: usuarioNuevo.rol,
+                token
+            }
         });
     }
 

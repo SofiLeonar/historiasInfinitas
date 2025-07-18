@@ -10,32 +10,45 @@ export async function loginUsuario(email, password) {
     throw new Error(errorData.error || "Error al iniciar sesión");
   }
 
-  return response.json(); // Devuelve { usuario: {...} }
+  return response.json(); // Devuelve { usuario: {...}, token: "..." }
 }
 
 export async function getUsuarios() {
-  const response = await fetch("http://localhost:5000/api/usuarios");
+  const token = localStorage.getItem("token");
+  const response = await fetch("http://localhost:5000/api/usuarios", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   if (!response.ok) throw new Error("Error al obtener usuarios");
   const data = await response.json();
   return data.usuarios;
 }
 
 export async function updateUser(userId, updateData) {
+  const token = localStorage.getItem("token");
   const response = await fetch(`http://localhost:5000/api/usuarios/${userId}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updateData),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ listaDeseados: updateData }),
   });
 
   if (!response.ok) throw new Error("Error al actualizar usuario");
-  return response.json();
+  return await response.json();
 }
 
-export async function eliminarUsuario(userId) {
-  const response = await fetch(`http://localhost:5000/api/usuarios/${userId}`, {
+export async function eliminarUsuario(id) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`http://localhost:5000/api/usuarios/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
-
-  if (!response.ok) throw new Error("Error al eliminar usuario");
-  return response.json();
+  if (!res.ok) throw new Error("Error al eliminar usuario");
+  return await res.json();
 }

@@ -15,15 +15,20 @@ export class UsuarioService {
     }
 
     static async getByEmail({email}) {
-        return prisma.usuario.findUnique({
-            where: {
-                email: email,
-            },
-            select: {
-                password: true,
-            },
-        });
-    }
+    return prisma.usuario.findUnique({
+        where: {
+            email: email,
+        },
+        select: {
+            id: true,
+            nombre: true,
+            email: true,
+            rol: true,
+            password: true,
+        },
+    });
+}
+
 
     static async create({nombre, usuario, email, password, rol}) {
         return prisma.usuario.create({

@@ -29,7 +29,8 @@ const routes = [
   { path: "/verlibro/:id", name: "Ver Libro", component: <RutaProtegida><VerLibro /></RutaProtegida> },
   { path: "/editarlibro/:id", name: "Editar Libro", component: <RutaProtegida><EditarLibro /></RutaProtegida> },
   { path: "/usuarios", name: "Lista de Usuarios", component: <RutaProtegida><VerUsuarios /></RutaProtegida> },
-  { path: "/editarusuario", name: "Editar Usuario", component: <RutaProtegida><EditarUsuario /></RutaProtegida> }
+  { path: "/editarusuario/:id", name: "Editar Usuario", component: <RutaProtegida><EditarUsuario /></RutaProtegida> }
+
 ];
 
 function App() {

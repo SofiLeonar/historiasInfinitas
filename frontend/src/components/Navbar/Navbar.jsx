@@ -27,6 +27,21 @@ export function Navbar() {
     };
   }, []);
 
+  const handleDeleteUser = async () => {
+    setDropdownOpen(false);
+    const confirmacion = window.confirm("¿Estás seguro que querés eliminar tu usuario?");
+    if (!confirmacion) return;
+
+    try {
+      await eliminarUsuario(user.id);
+      logout();
+      navigate("/login");
+    } catch (error) {
+      alert("Ocurrió un error al eliminar el usuario.");
+      console.error(error);
+    }
+  };
+
   console.log("Usuario en Navbar:", user);
 
   return (
@@ -94,35 +109,20 @@ export function Navbar() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
-                <span>{user.name}</span>
+                <span>{user?.nombre || user?.name || "Usuario"}</span>
               </button>
 
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-20 text-gray-900">
                   <Link
-                    to="/editarusuario"
+                    to={`/editarusuario/${user.id}`}
                     className="block px-4 py-2 hover:bg-gray-200"
                     onClick={() => setDropdownOpen(false)}
-                  >
+                    >
                     Editar usuario
-                  </Link>
+                    </Link>
                   <button
-                    onClick={async () => {
-                      setDropdownOpen(false);
-                      const confirmacion = window.confirm(
-                        "¿Estás seguro que querés eliminar tu usuario?"
-                      );
-                      if (!confirmacion) return;
-
-                      try {
-                        await eliminarUsuario(user.id);
-                        logout();
-                        navigate("/login");
-                      } catch (error) {
-                        alert("Ocurrió un error al eliminar el usuario.");
-                        console.error(error);
-                      }
-                    }}
+                    onClick={handleDeleteUser}
                     className="w-full text-left px-4 py-2 hover:bg-gray-200"
                   >
                     Eliminar usuario
