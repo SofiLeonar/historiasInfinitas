@@ -8,7 +8,7 @@ export class LibroController {
     }
 
     static async getById(req, res) {
-        const { id } = req.params;
+        const id = parseInt(req.params.id);
         const libro = await LibroService.getById({ id });
         if (!libro) {
             res.status(404).json({ error: "Libro no encontrado" });
@@ -35,50 +35,56 @@ export class LibroController {
     }
 
     static async update(req, res) {
-        const { id } = req.params;
+    const id = Number(req.params.id); 
+
+    try {
         const libro = await LibroService.getById({ id });
 
         if (!libro) {
-            res.status(404).json({ error: "Libro no encontrado" });
-            return;
+            return res.status(404).json({ error: "Libro no encontrado" });
         }
 
         const { titulo, autor, resumen, anio_publicacion, imagen } = req.body;
 
-        libro.titulo = titulo ?? libro.titulo;
-        libro.autor = autor ?? libro.autor;
-        libro.resumen = resumen ?? libro.resumen;
-        libro.anio_publicacion = anio_publicacion ?? libro.anio_publicacion;
-        libro.imagen = imagen ?? libro.imagen;
+        const dataToUpdate = {
+            titulo: titulo ?? libro.titulo,
+            autor: autor ?? libro.autor,
+            resumen: resumen ?? libro.resumen,
+            anio_publicacion: anio_publicacion ?? libro.anio_publicacion,
+            imagen: imagen ?? libro.imagen
+        };
 
-        const updatedLibro = await LibroService.update({ 
-            id, 
-            titulo, 
-            autor, 
-            resumen, 
-            anio_publicacion, 
-            imagen 
-        });
+        const updatedLibro = await LibroService.update({ id, ...dataToUpdate });
 
         res.status(200).json({ 
             message: "Libro actualizado correctamente", 
-            updatedLibro });
+            updatedLibro 
+        });
+
+        } catch (error) {
+            console.error("Error Prisma en update:", error);
+            res.status(500).json({ error: "Error interno", detalle: error.message });
+        }
     }
 
     static async delete(req, res) {
-        const { id } = req.params;
-        const libro = await LibroService.getById({ id });
+    const id = Number(req.params.id);
+    console.log("Controller delete id:", id, typeof id);
 
-        if (!libro) {
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "ID inválido" });
+    }
+
+    try {
+        const libro = await LibroService.delete({ id });
+        res.status(200).json({
+        message: "Libro eliminado correctamente",
+        libro,
+        });
+        } catch (error) {
+            console.error("Error en delete:", error);
             res.status(404).json({ error: "Libro no encontrado" });
-            return;
         }
-
-        await LibroService.delete({ id });
-
-        res.status(200).json({ 
-            message: "Libro eliminado correctamente", 
-            libro });
     }
 
 }

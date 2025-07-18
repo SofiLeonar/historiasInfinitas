@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
-import { useLibros } from "../../hooks/useLibros";
+import { getLibros } from "../../services/libros";
 import { CardBook } from "../../components/CardBook/CardBook";
 import { FallingLines } from "react-loader-spinner";
+import { data } from "react-router-dom";
 
 export function Libros() {
   const [libros, setLibros] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    useLibros().then(([libros]) => {
-      console.log(libros);
-      setLibros(libros);
-    })
-    .catch((error)=>console.log(error))
-    .finally(() => setLoading(false));
+    getLibros()
+    .then((data) => {
+      console.log(data);
+      setLibros(Array.isArray(data) ? data : []);
+      })  
+          .catch((error) => {
+        console.error(error);
+        setLibros([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
       if (loading) {

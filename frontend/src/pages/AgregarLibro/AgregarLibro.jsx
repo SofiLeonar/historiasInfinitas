@@ -9,7 +9,6 @@ export function AgregarLibro() {
     autor: "",
     resumen: "",
     anio_publicacion: "",
-    editorial: "",
     imagen: "",
   });
 
@@ -24,32 +23,27 @@ export function AgregarLibro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    try {
-      const libros = await getLibros();
-  
+     try {
       if (!formData.titulo || !formData.autor || !formData.anio_publicacion) {
         toast.error("Por favor, completa todos los campos requeridos.");
         return;
       }
   
       const nuevoLibro = {
-        id: libros.length ? libros[libros.length - 1].id + 1 : 1,
         titulo: formData.titulo,
         autor: formData.autor,
         resumen: formData.resumen,
-        anio_publicacion: formData.anio_publicacion,
-        editorial: formData.editorial,
+        anio_publicacion: Number(formData.anio_publicacion),
         imagen: formData.imagen,
       };
   
-      const response = await fetch(librosAPI, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY, 
-        },
-        body: JSON.stringify({ libros: [...libros, nuevoLibro] }),
-      });
+      const response = await fetch("http://localhost:5000/api/libros", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(nuevoLibro),
+    });
   
       if (!response.ok) {
         toast.error("Hubo un problema al agregar el libro.");
@@ -63,9 +57,9 @@ export function AgregarLibro() {
         autor: "",
         resumen: "",
         anio_publicacion: "",
-        editorial: "",
         imagen: "",
       });
+
     } catch (error) {
       console.error("Error al agregar libro:", error);
       toast.error("Hubo un problema al registrar el libro.");
@@ -139,21 +133,6 @@ export function AgregarLibro() {
               name="anio_publicacion"
               placeholder="Ejemplo: 2023"
               value={formData.anio_publicacion}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 mb-2" htmlFor="editorial">
-              Editorial
-            </label>
-            <input
-              type="text"
-              id="editorial"
-              name="editorial"
-              placeholder="Nombre de la editorial"
-              value={formData.editorial}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-gray-500"
             />

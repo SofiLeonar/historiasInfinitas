@@ -13,7 +13,7 @@ export class LibroService {
     static getById({id}) {
         return prisma.libro.findUnique({
             where: {
-                id: id,
+                id: Number(id),
             },
         });
     }
@@ -30,25 +30,26 @@ export class LibroService {
         });
     }
 
-    static update({id, titulo, autor, resumen, anio_publicacion, imagen}) {
+    static update({ id, titulo, autor, resumen, anio_publicacion, imagen }) {
         return prisma.libro.update({
             where: {
-                id: id,
+                id: Number(id),
             },
             data: {
-                titulo: titulo,
-                autor: autor,
-                resumen: resumen,
-                anio_publicacion: anio_publicacion,
-                imagen: imagen,
-            },
+                titulo,
+                autor,
+                resumen,
+                anio_publicacion,
+                imagen
+            }
         });
     }
 
     static delete({id}) {
+        console.log("Service ID:", id, typeof id);
         return prisma.libro.delete({
             where: {
-                id: id,
+                id: Number(id),
             },
         });
     } 

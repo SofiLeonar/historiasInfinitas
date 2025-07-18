@@ -25,7 +25,6 @@ export function CardBook({ libro }) {
             : libro.resumen}
             </p>
             <p className="text-sm text-gray-500 mb-4">Año: {libro.anio_publicacion}</p>
-            <p className="text-sm text-gray-500 mb-4">Editorial: {libro.editorial}</p>
         </div>
         <div className="px-6 pb-4">
           <button

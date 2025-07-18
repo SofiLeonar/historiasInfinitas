@@ -22,6 +22,7 @@ export function VerLibro() {
       try {
         setLoading(true);
         const libros = await getLibros();
+        console.log(libros);
         const libroEncontrado = libros.find((libro) => libro.id === parseInt(id, 10));
   
         if (!libroEncontrado) throw new Error("Libro no encontrado");
@@ -118,7 +119,6 @@ export function VerLibro() {
           <h1 className="text-3xl font-bold mb-4">{libro.titulo}</h1>
           <p className="text-gray-600 mb-2">Autor: {libro.autor}</p>
           <p className="text-gray-600 mb-2">Año de publicación: {libro.anio_publicacion}</p>
-          <p className="text-gray-600 mb-2">Editorial: {libro.editorial}</p>
           <p className="text-gray-700 mb-4">{libro.resumen}</p>
 
           <div className="flex space-x-4">
