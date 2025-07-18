@@ -37,7 +37,7 @@ export async function updateUser(userId, updateData) {
     body: JSON.stringify({ listaDeseados: updateData }),
   });
 
-  if (!response.ok) throw new Error("Error al actualizar usuario");
+  
   return await response.json();
 }
 

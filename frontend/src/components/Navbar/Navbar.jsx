@@ -114,13 +114,7 @@ export function Navbar() {
 
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-20 text-gray-900">
-                  <Link
-                    to={`/editarusuario/${user.id}`}
-                    className="block px-4 py-2 hover:bg-gray-200"
-                    onClick={() => setDropdownOpen(false)}
-                    >
-                    Editar usuario
-                    </Link>
+                  
                   <button
                     onClick={handleDeleteUser}
                     className="w-full text-left px-4 py-2 hover:bg-gray-200"
