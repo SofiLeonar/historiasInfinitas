@@ -1,0 +1,36 @@
+GET http://localhost:5000/api/libros
+Accept: application/json
+
+###
+
+GET http://localhost:5000/api/libros/1
+Accept: application/json
+
+###
+
+POST http://localhost:5000/api/libros
+Content-Type: application/json
+
+{
+    "titulo": "El libro más copado",
+    "autor": "Autor del libro más copado",
+    "resumen": "Resumen del libro más copado",
+    "anio_publicacion": 2020,
+    "imagen": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+}
+
+###
+
+PUT http://localhost:5000/api/libros/1
+Content-Type: application/json
+
+{
+    "titulo": "Otro nombre para el libro más copado",
+    "autor": "Autor del libro",
+    "resumen": "Resumen del libro",
+    "anio_publicacion": 2022,
+    "imagen": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+}
+
+###
+DELETE http://localhost:5000/api/libros/1   

@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//tablas para la base de datos
+//signo de pregunta para marcar si es opcional
+model Libro {
+  id      Int      @id @default(autoincrement())
+  titulo         String   @db.VarChar(255)
+  autor          String   @db.VarChar(255)
+  resumen        String   @db.VarChar(500)
+  anio_publicacion Int     
+  imagen         String   @db.VarChar(255)
+
+  listaDeseados    ListaDeseados[]
+}
+
+model Usuario {
+  id    String      @id @default(uuid())
+  nombre         String   @db.VarChar(255)
+  usuario        String   @db.VarChar(255)
+  email          String   @unique@db.VarChar(255)
+  password       String   @db.VarChar(255)
+  rol            String   @db.VarChar(255) @default("usuario")
+
+  listaDeseados    ListaDeseados[]
+}
+
+model ListaDeseados {
+  id_lista_deseados Int      @id @default(autoincrement())
+  id_libro          Int      
+  id_usuario        String
+  libro          Libro @relation(fields: [id_libro], references: [id])
+  usuario        Usuario @relation(fields: [id_usuario], references: [id])
+
+  @@unique([id_libro, id_usuario]) 
+}
+
+//npx prisma migrate dev --name relaciones
