@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { getLibros } from "../../services/libros";
 import { CardBook } from "../../components/CardBook/CardBook";
 import { FallingLines } from "react-loader-spinner";
-import { data } from "react-router-dom";
 
 export function Libros() {
   const [libros, setLibros] = useState([]);
