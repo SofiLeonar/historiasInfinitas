@@ -1,0 +1,13 @@
+###
+GET http://localhost:5000/api/listaDeseados
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA5MTZkYjRkLTM5M2ItNDZmOC1hNGVlLWIxZGNkYTFkZGE0NiIsImlhdCI6MTc1Mjg0NjUwMywiZXhwIjoxNzUyODUzNzAzfQ.QVpL4RGwLGVt03rY6W-nNQMuV4JmZZpXGSkgz9UpVmA
+
+###
+POST http://localhost:5000/api/listaDeseados
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjA5MTZkYjRkLTM5M2ItNDZmOC1hNGVlLWIxZGNkYTFkZGE0NiIsImlhdCI6MTc1Mjg0NjUwMywiZXhwIjoxNzUyODUzNzAzfQ.QVpL4RGwLGVt03rY6W-nNQMuV4JmZZpXGSkgz9UpVmA
+
+{
+    "id_libro": 1
+}

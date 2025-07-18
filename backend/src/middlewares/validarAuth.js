@@ -3,14 +3,15 @@ import { verifyToken } from "../utils/jwt.js";
 export function validarAuth(req, res, next) {
     const authHeader = req.headers.authorization;
 
-    if(!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ error: "No se ha proporcionado un token" });
     }
 
     const token = authHeader.split(" ")[1];
 
     try {
-        const decoded = verifyToken(token);
+        const decoded = verifyToken(token); 
+        console.log("Token decodificado:", decoded);
         req.user = decoded;
         next();
     } catch (error) {

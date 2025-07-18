@@ -15,6 +15,10 @@ export class ListaDeseadosController {
             if (error.code === "P2002") {
                 return res.status(409).json({ error: "Este libro ya está en tu lista de deseados" });
             }
+            console.error("Error en controller:", error);
+            console.log("Body recibido:", req.body);
+            console.log("ID del usuario:", req.user);
+
             res.status(400).json({ error: "Error al agregar libro a la lista de deseados" });
         }
     }
