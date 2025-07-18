@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useRef, useEffect } from "react";
+import { eliminarUsuario } from "../../services/usuarios";
 
 export function Navbar() {
   const { isLoggedIn, user, logout } = useAuth();
@@ -26,6 +27,8 @@ export function Navbar() {
     };
   }, []);
 
+  console.log("Usuario en Navbar:", user);
+
   return (
     <nav className="bg-gray-900 text-gray-400 sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -47,24 +50,18 @@ export function Navbar() {
           <Link to="/libros" className="hover:text-white transition-colors">
             Libros
           </Link>
-          <Link
-            to="/listadedeseados"
-            className="hover:text-white transition-colors"
-          >
+          <Link to="/listadedeseados" className="hover:text-white transition-colors">
             Lista de deseados
           </Link>
           {isAdmin && (
-            <Link
-              to="/agregarlibro"
-              className="hover:text-white transition-colors"
-            >
-              Agregar libro
-            </Link>
-          )}
-          {isAdmin && (
-            <Link to="/usuarios" className="hover:text-white transition-colors">
-              Lista de usuarios
-            </Link>
+            <>
+              <Link to="/agregarlibro" className="hover:text-white transition-colors">
+                Agregar libro
+              </Link>
+              <Link to="/usuarios" className="hover:text-white transition-colors">
+                Lista de usuarios
+              </Link>
+            </>
           )}
         </div>
 
@@ -74,10 +71,7 @@ export function Navbar() {
               <Link to="/login" className="hover:text-white transition-colors">
                 Iniciar Sesión
               </Link>
-              <Link
-                to="/register"
-                className="hover:text-white transition-colors"
-              >
+              <Link to="/register" className="hover:text-white transition-colors">
                 Registro
               </Link>
             </div>
@@ -98,13 +92,9 @@ export function Navbar() {
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
-                <span>{user.nombre}</span>
+                <span>{user.name}</span>
               </button>
 
               {dropdownOpen && (
@@ -117,16 +107,20 @@ export function Navbar() {
                     Editar usuario
                   </Link>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setDropdownOpen(false);
-                      if (
-                        window.confirm(
-                          "¿Estás seguro que querés eliminar tu usuario?"
-                        )
-                      ) {
-                        alert(
-                          "Funcionalidad eliminar usuario aún no implementada."
-                        );
+                      const confirmacion = window.confirm(
+                        "¿Estás seguro que querés eliminar tu usuario?"
+                      );
+                      if (!confirmacion) return;
+
+                      try {
+                        await eliminarUsuario(user.id);
+                        logout();
+                        navigate("/login");
+                      } catch (error) {
+                        alert("Ocurrió un error al eliminar el usuario.");
+                        console.error(error);
                       }
                     }}
                     className="w-full text-left px-4 py-2 hover:bg-gray-200"

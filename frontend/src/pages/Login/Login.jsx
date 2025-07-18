@@ -1,37 +1,34 @@
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
-  const { isLoggedIn, login } = useAuth(); 
+  const { isLoggedIn, login } = useAuth();
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target; 
+    const { name, value } = e.target;
     setCredentials((prev) => ({
       ...prev,
-      [name]: value, 
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const success = login(credentials.email, credentials.password);
-    console.log("Intentando iniciar sesión con:", credentials.email, credentials.password);
-
-
+    const success = await login(credentials.email, credentials.password);
     if (success) {
-      navigate("/"); 
+      navigate("/");
     } else {
       toast.error("Credenciales incorrectas. Inténtalo de nuevo.");
     }
   };
 
   if (isLoggedIn) {
-    return null; 
+    return null; // O un redirect si querés
   }
 
   return (

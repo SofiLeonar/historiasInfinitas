@@ -23,30 +23,18 @@ export function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const usuarios = await getUsuarios();
-
-      const nuevoUsuario = {
-        id: usuarios.length ? usuarios[usuarios.length - 1].id + 1 : 1, 
-        nombre: formData.nombre,
-        usuario: formData.usuario,
-        email: formData.email,
-        password: formData.password,
-        rol: formData.rol,
-        listaDeseados: [],
-      };
-
-      const response = await fetch(usuariosAPI, {
-        method: "PUT",
+     try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Master-Key": API_KEY, 
         },
-        body: JSON.stringify({ usuarios: [...usuarios, nuevoUsuario] }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        toast.error("Error al registrar el usuario.");
+        const error = await response.json();
+        toast.error(error.message || "Error al registrar el usuario.");
         return;
       }
 

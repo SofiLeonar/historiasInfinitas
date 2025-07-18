@@ -1,52 +1,41 @@
-import { API_KEY, usuariosAPI } from "../utils/environment";
-import { toast } from "react-toastify";
+export async function loginUsuario(email, password) {
+  const response = await fetch("http://localhost:5000/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
-const headers = {
-  "Content-Type": "application/json",
-  "X-Master-Key": API_KEY,
-};
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Error al iniciar sesión");
+  }
 
-export async function getUsuarios() {
-  const response = await fetch(usuariosAPI, { headers });
-  const data = await response.json();
-  return data.record.usuarios;
+  return response.json(); // Devuelve { usuario: {...} }
 }
 
-export async function updateUser(userId, listaDeseados) {
-    try {
-      const response = await fetch(usuariosAPI, { headers });
-      if (!response.ok) throw new Error("No se pudieron obtener los usuarios.");
-  
-      const data = await response.json();
-      const usuarios = data.record.usuarios;
-  
-      const usuario = usuarios.find((user) => user.id === userId);
-      if (!usuario) throw new Error("Usuario no encontrado.");
-  
-      const listaLimpia = Array.isArray(listaDeseados)
-        ? [...new Set(listaDeseados.flat())]
-        : [];
-      usuario.listaDeseados = listaLimpia;
-  
-      const updatedUsuarios = usuarios.map((user) =>
-        user.id === userId ? usuario : user
-      );
-  
-      const updateResponse = await fetch(usuariosAPI, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY,
-        },
-        body: JSON.stringify({ usuarios: updatedUsuarios }),
-      });
-  
-      if (!updateResponse.ok) throw new Error("Error al actualizar el usuario.");
-  
-      return true;
-    } catch (error) {
-      console.error("Error al actualizar usuario:", error);
-      return false;
-    }
-  }
-  
+export async function getUsuarios() {
+  const response = await fetch("http://localhost:5000/api/usuarios");
+  if (!response.ok) throw new Error("Error al obtener usuarios");
+  const data = await response.json();
+  return data.usuarios;
+}
+
+export async function updateUser(userId, updateData) {
+  const response = await fetch(`http://localhost:5000/api/usuarios/${userId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updateData),
+  });
+
+  if (!response.ok) throw new Error("Error al actualizar usuario");
+  return response.json();
+}
+
+export async function eliminarUsuario(userId) {
+  const response = await fetch(`http://localhost:5000/api/usuarios/${userId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) throw new Error("Error al eliminar usuario");
+  return response.json();
+}
