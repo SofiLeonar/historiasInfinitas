@@ -11,8 +11,10 @@ export function validarAuth(req, res, next) {
 
     try {
         const decoded = verifyToken(token); 
-        console.log("Token decodificado:", decoded);
-        req.user = decoded;
+        req.user = {
+            id: decoded.id,
+            rol: decoded.rol
+        };
         next();
     } catch (error) {
         return res.status(401).json({ error: "Token no válido" });

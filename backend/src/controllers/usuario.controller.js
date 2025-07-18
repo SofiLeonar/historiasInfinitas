@@ -56,17 +56,22 @@ export class UsuarioController {
 
     static async delete(req, res) {
         const { id } = req.params;
+
+        if (req.user.id !== id && req.user.rol !== "admin") {
+            return res.status(403).json({ error: "No autorizado para eliminar este usuario" });
+        }
+
         const usuario = await UsuarioService.getById({ id });
 
         if (!usuario) {
-            res.status(404).json({ error: "Usuario no encontrado" });
-            return;
+            return res.status(404).json({ error: "Usuario no encontrado" });
         }
 
         await UsuarioService.delete({ id });
 
         res.status(200).json({ 
             message: "Usuario eliminado correctamente", 
-            usuario });
+            usuario 
+        });
     }
 }

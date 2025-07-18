@@ -3,7 +3,7 @@ GET http://localhost:5000/api/usuarios
 Accept: application/json
 
 ###
-GET http://localhost:5000/api/usuarios/1
+GET http://localhost:5000/api/usuarios/0916db4d-393b-46f8-a4ee-b1dcda1dda46
 Accept: application/json
 
 ###
@@ -12,9 +12,9 @@ POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-    "nombre": "Usuario",
-    "usuario": "otroUser",
-    "email": "user2@example.com",
+    "nombre": "Juan",
+    "usuario": "juancapo",
+    "email": "user3@example.com",
     "password": "nose1234",
     "rol": "usuario"
 }
@@ -36,9 +36,10 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "user2@example.com",
+    "email": "user3@example.com",
     "password": "nose1234"
 }
 
 ###
-DELETE http://localhost:5000/api/usuarios/1
+DELETE http://localhost:5000/api/usuarios/4e6539d1-7a58-4308-9f6b-0a1c149b9999
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NTI4NTI2MDEsImV4cCI6MTc1Mjg1OTgwMX0.WmGsSmRf4zH7wB-D8VM0_O4NJ7rEj0-O63eX6kPTlpI
