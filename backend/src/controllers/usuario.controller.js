@@ -22,7 +22,7 @@ export class UsuarioController {
         try {
             const { nombre, usuario, email, password, rol } = req.body;
             const passwordHash = await hashPassword(password);
-            console.log("Recibido:", { nombre, usuario, email, passwordHash, rol }); //!sacar esto y lo que sigue después de probar
+            console.log("Recibido:", { nombre, usuario, email, passwordHash, rol }); 
             console.log("Creando usuario en DB...");
             const usuarioNuevo = await UsuarioService.create({
                 nombre, 
@@ -34,25 +34,44 @@ export class UsuarioController {
             res.status(201).json({ usuarioNuevo });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ error: error.message || "Error al crear el usuario" }); //!cambiar después
+            res.status(500).json({ error: error.message || "Error al crear el usuario" }); 
             
         }
     }
 
-    static async update(req, res) {
-        const { id } = req.params;
-        const { nombre, usuario, email, password, rol } = req.body;
-        const passwordHash = await hashPassword(password);
-        const usuarioActualizado = await UsuarioService.update({
-            id, 
-            nombre, 
-            usuario, 
-            email, 
-            password: passwordHash,
-            rol,
-        });
-        res.status(200).json({ usuarioActualizado });
+   static async update(req, res) {
+  const { id } = req.params;
+  const { nombre, usuario, email, password, rol } = req.body;
+
+  console.log("Datos recibidos en body:", req.body);
+
+  try {
+    let dataToUpdate = {
+      nombre,
+      usuario,
+      email,
+      rol,
+    };
+
+    if (password && password.trim() !== "") {
+      dataToUpdate.password = await hashPassword(password);
     }
+
+    const usuarioActualizado = await UsuarioService.update({
+      id,
+      ...dataToUpdate,
+    });
+
+    res.status(200).json({ usuarioActualizado });
+  } catch (error) {
+    console.error("Error actualizando usuario:", error);
+    if (error.code) {
+      console.error("Prisma error code:", error.code);
+      console.error("Error meta:", error.meta);
+    }
+    res.status(400).json({ error: error.message || "Error al actualizar usuario" });
+  }
+}
 
     static async delete(req, res) {
         const { id } = req.params;

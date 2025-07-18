@@ -42,20 +42,23 @@ export class UsuarioService {
         });
     }
 
-    static async update({id, nombre, usuario, email, password, rol}) {
-        return prisma.usuario.update({
-            where: {
-                id: id,
-            },
-            data: {
-                nombre,
-                usuario,
-                email,
-                password,
-                rol,
-            },
-        });
+   static async update({ id, nombre, usuario, email, password, rol }) {
+    const dataToUpdate = {
+      nombre,
+      usuario,
+      email,
+      rol,
+    };
+
+    if (password) {
+      dataToUpdate.password = password;
     }
+
+    return prisma.usuario.update({
+      where: { id },
+      data: dataToUpdate,
+    });
+  }
 
     static async delete({id}) {
         return prisma.usuario.delete({

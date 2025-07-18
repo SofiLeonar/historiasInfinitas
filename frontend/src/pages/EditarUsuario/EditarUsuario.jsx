@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 export function EditarUsuario() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // Estado del formulario con los campos del usuario
   const [formData, setFormData] = useState({
     nombre: "",
     usuario: "",
@@ -12,30 +14,35 @@ export function EditarUsuario() {
     password: "",
     rol: "usuario",
   });
+
+  // Estado para mostrar carga mientras trae los datos
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUsuario = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/usuarios/${id}`);
-        if (!res.ok) throw new Error("Error al obtener usuario");
-        const data = await res.json();
+useEffect(() => {
+  const fetchUsuario = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/usuarios/${id}`);
+      if (!res.ok) throw new Error("Error al obtener usuario");
+      const data = await res.json();
 
-        setFormData({
-          nombre: data.nombre || "",
-          usuario: data.usuario || "",
-          email: data.email || "",
-          password: "", // No mostrar contraseña actual, dejar vacía para cambio opcional
-          rol: data.rol || "usuario",
-        });
-        setLoading(false);
-      } catch (error) {
-        toast.error("No se pudo cargar el usuario");
-        setLoading(false);
-      }
-    };
-    fetchUsuario();
-  }, [id]);
+      // Aquí accedés a data.usuario, porque tu backend responde { usuario: {...} }
+      setFormData({
+        nombre: data.usuario.nombre || "",
+        usuario: data.usuario.usuario || "",
+        email: data.usuario.email || "",
+        password: "",
+        rol: data.usuario.rol || "usuario",
+      });
+      setLoading(false);
+    } catch (error) {
+      toast.error("No se pudo cargar el usuario");
+      setLoading(false);
+      console.error(error);
+    }
+  };
+  fetchUsuario();
+}, [id]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,48 +50,45 @@ export function EditarUsuario() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Validaciones básicas
-    if (!formData.nombre || !formData.usuario || !formData.email) {
-      toast.error("Completa los campos obligatorios");
-      return;
+  if (!formData.nombre || !formData.usuario || !formData.email) {
+    toast.error("Completa los campos obligatorios");
+    return;
+  }
+
+  try {
+    const bodyToSend = {
+      nombre: formData.nombre,
+      usuario: formData.usuario,
+      email: formData.email,
+      rol: formData.rol,
+    };
+
+    if (formData.password) {
+      bodyToSend.password = formData.password;
     }
 
-    try {
-      const bodyToSend = {
-        nombre: formData.nombre,
-        usuario: formData.usuario,
-        email: formData.email,
-        rol: formData.rol,
-      };
+    console.log("Enviando update:", bodyToSend);
 
-      // Solo mandar password si cambió (no vacía)
-      if (formData.password) {
-        bodyToSend.password = formData.password;
-      }
+    const res = await fetch(`http://localhost:5000/api/usuarios/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bodyToSend),
+    });
 
-      const res = await fetch(`http://localhost:5000/api/usuarios/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          // Si usas token para autorización, ponelo aquí:
-          // Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(bodyToSend),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Error al actualizar usuario");
-      }
-
-      toast.success("Usuario actualizado correctamente");
-      navigate("/verusuarios"); // O a donde quieras redirigir
-    } catch (error) {
-      toast.error(error.message);
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Error al actualizar usuario");
     }
-  };
+
+    toast.success("Usuario actualizado correctamente");
+    navigate("/verusuarios");
+  } catch (error) {
+    toast.error(error.message);
+    console.error("Error en update usuario:", error);
+  }
+};
 
   if (loading) return <p>Cargando usuario...</p>;
 
@@ -101,12 +105,8 @@ export function EditarUsuario() {
         </h2>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Inputs igual que antes */}
-          {/* ... */}
-          {/* Repite los inputs con formData y handleChange */}
-
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="nombre">
+            <label htmlFor="nombre" className="block mb-1 font-medium">
               Nombre completo
             </label>
             <input
@@ -115,13 +115,13 @@ export function EditarUsuario() {
               name="nombre"
               value={formData.nombre}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border rounded"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="usuario">
+            <label htmlFor="usuario" className="block mb-1 font-medium">
               Usuario
             </label>
             <input
@@ -130,13 +130,13 @@ export function EditarUsuario() {
               name="usuario"
               value={formData.usuario}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border rounded"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="email">
+            <label htmlFor="email" className="block mb-1 font-medium">
               Email
             </label>
             <input
@@ -145,13 +145,13 @@ export function EditarUsuario() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border rounded"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="password">
+            <label htmlFor="password" className="block mb-1 font-medium">
               Contraseña (dejar vacío para no cambiar)
             </label>
             <input
@@ -160,13 +160,13 @@ export function EditarUsuario() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               placeholder="Nueva contraseña"
+              className="w-full px-3 py-2 border rounded"
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="rol">
+            <label htmlFor="rol" className="block mb-1 font-medium">
               Rol
             </label>
             <select
@@ -174,7 +174,7 @@ export function EditarUsuario() {
               name="rol"
               value={formData.rol}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              className="w-full px-3 py-2 border rounded"
             >
               <option value="usuario">Usuario</option>
               <option value="admin">Administrador</option>
@@ -183,7 +183,7 @@ export function EditarUsuario() {
 
           <button
             type="submit"
-            className="w-full bg-gray-900 text-white py-2 px-4 rounded-lg hover:bg-white hover:text-black transition border border-gray-900"
+            className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-700 transition"
           >
             Guardar Cambios
           </button>
