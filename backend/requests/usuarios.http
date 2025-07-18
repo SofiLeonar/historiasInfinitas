@@ -12,11 +12,11 @@ POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-    "nombre": "Sofia",
-    "usuario": "sofi",
-    "email": "sofi@example.com",
-    "password": "hola1234",
-    "rol": "admin"
+    "nombre": "Usuario",
+    "usuario": "otroUser",
+    "email": "user2@example.com",
+    "password": "nose1234",
+    "rol": "usuario"
 }
 
 ###
@@ -36,8 +36,8 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "sofi@example.com",
-    "password": "hola1234"
+    "email": "user2@example.com",
+    "password": "nose1234"
 }
 
 ###

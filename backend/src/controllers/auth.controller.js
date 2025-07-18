@@ -1,6 +1,5 @@
 import { UsuarioService } from "../services/usuario.service.js";
 import { hashPassword } from "../utils/hash.js";
-import { prisma } from "../providers/prisma.js";
 import { createToken } from "../utils/jwt.js";
 import { comparePassword } from "../utils/hash.js";
 
@@ -8,9 +7,7 @@ export class AuthController {
     static async login(req, res) {
         const { email, password } = req.body;
 
-        const usuario = await prisma.usuario.findUnique({
-            where: { email },
-        });
+        const usuario = await UsuarioService.getByEmail({ email });
 
         if (!usuario) {
             res.status(401).json({ error: "Usuario no encontrado" });
@@ -26,9 +23,6 @@ export class AuthController {
 
         const token = createToken({ 
             id: usuario.id, 
-            nombre: usuario.nombre, 
-            email: usuario.email, 
-            rol: usuario.rol
         });
 
         res.status(200).json({ 
@@ -71,9 +65,6 @@ export class AuthController {
 
         const token = createToken({
             id: usuarioNuevo.id,
-            nombre: usuarioNuevo.nombre,
-            email: usuarioNuevo.email,
-            rol: usuarioNuevo.rol
         });
 
         res.status(201).json({ 
@@ -87,9 +78,19 @@ export class AuthController {
     }
 
     static async profile(req, res) {
-        res.status(200).json({
-            message: "Perfil de usuario",
-            user: req.user,
-        });
+        try {
+        const usuario = await UsuarioService.getById({ id: req.user.id });
+
+        if (!usuario) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+        const { password, ...userWithoutPassword } = usuario;
+
+        res.status(200).json({ user: userWithoutPassword });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al obtener el perfil del usuario" });
     }
+}
 }
